@@ -1,47 +1,38 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/vite.svg" type="image/svg+xml" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
-    />
-    <title>Interactive Avatar Demo</title>
-  </head>
 
-  <body>
-    <main
-      class="container"
-      style="display: flex; flex-direction: column; align-items: center"
-    >
-      <h1>Interactive Avatar Demo (Vite + TypeScript)</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/vite.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+  <title>Entrevista de trabajo</title>
+</head>
 
-      <!-- Video Section -->
-      <article style="width: fit-content">
-        <video id="avatarVideo" autoplay playsinline></video>
-      </article>
+<body>
+  <main class="container" style="display: flex; flex-direction: column; align-items: center">
+    <h1>Entrevista de trabajo SEO Contenidos</h1>
 
-      <!-- Controls Section -->
-      <section>
-        <section role="group">
-          <button id="startSession">Start Session</button>
-          <button id="endSession" disabled>End Session</button>
-        </section>
+    <!-- Video Section -->
+    <article style="width: fit-content">
+      <video id="avatarVideo" autoplay playsinline></video>
+    </article>
 
-        <section role="group">
-          <input
-            type="text"
-            id="userInput"
-            placeholder="Type something to talk to the avatar..."
-            aria-label="User input"
-          />
-          <button id="speakButton" role="button">Speak</button>
-        </section>
-      </section>
-    </main>
+    <!-- Controls Section -->
+    <section role="group">
+      <button id="startSession">Start Session</button>
+      <button id="endSession" disabled>End Session</button>
+    </section>
 
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+    <!-- Botón de micrófono oculto inicialmente -->
+    <section role="group">
+      <button id="micButton" role="button" aria-label="Start recording" style="display: none;" >
+        <img src="/microphone-svgrepo-com.svg" alt="Microphone" style="width: 24px; height: 35px;">
+      </button>
+    </section>
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>
