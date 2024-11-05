@@ -16,7 +16,7 @@ let avatar: StreamingAvatar | null = null;
 let sessionData: any = null;
 
 // Establecer conexión al WebSocket del servidor para recibir las transcripciones
-const socket = new WebSocket("ws://localhost:8080");
+const socket = new WebSocket("ws://localhost:3000");
 
 // Configurar eventos del WebSocket
 socket.onopen = () => {
@@ -26,7 +26,7 @@ socket.onopen = () => {
 // Manejar la recepción de mensajes desde el backend
 socket.onmessage = async (event) => {
   const data = JSON.parse(event.data);
-  console.log("Mensaje recibido en el frontend:", data);
+  console.log("Mensaje recibido en el frontend:", data.message);
 
   if (data.type === "text" && data.transcription) {
     console.log("Texto recibido para el avatar:", data.transcription);
