@@ -1,9 +1,4 @@
-import StreamingAvatar, {
-  AvatarQuality,
-  StreamingEvents,
-  TaskType,
-  VoiceEmotion,
-} from "@heygen/streaming-avatar";
+import StreamingAvatar, { AvatarQuality, StreamingEvents, TaskType, VoiceEmotion } from "@heygen/streaming-avatar";
 
 const videoElement = document.getElementById("avatarVideo") as HTMLVideoElement;
 const startButton = document.getElementById("startSession") as HTMLButtonElement;
@@ -95,10 +90,40 @@ async function fetchAccessTexto(): Promise<string> {
   }
 }
 
+async function fetchInterrupTexto(): Promise<string> {
+  try {
+    const response = await fetch("http://localhost:3000/api/interrupciones-audio", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        session_id: sessionData.session_id,
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error al obtener el texto:", errorData);
+      throw new Error(`Error: ${errorData.error || "No autorizado"}`);
+    }
+
+    const data = await response.json();
+    return data.text;
+  } catch (error) {
+    console.error("Error en la solicitud del texto:", error);
+    throw error;
+  }
+}
+
+
 // Inicializar sesión del avatar
 async function initializeAvatarSession() {
   const token = await fetchAccessToken();
   avatar = new StreamingAvatar({ token });
+
+  // Cambiar visibilidad de los botones
+  startButton.style.display = "none"; // Oculta Start Session
+  endButton.style.display = "inline-block"; // Muestra End Session
+  micButton.style.display = "inline-block"; // Muestra el botón del micrófono
 
   sessionData = await avatar.createStartAvatar({
     quality: AvatarQuality.High,
@@ -156,6 +181,8 @@ async function terminateAvatarSession() {
   videoElement.srcObject = null;
   avatar = null;
   // Ocultar el botón de micrófono
+  startButton.style.display = "inline-block"; // Muestra Start Session
+  endButton.style.display = "none"; // Oculta End Session
   micButton.style.display = "none";
 
   // Habilita el botón de iniciar sesión y deshabilita el de terminar
@@ -187,8 +214,14 @@ if (SpeechRecognition) {
   recognition.onresult = async (event: any) => {
     const transcript = event.results[0][0].transcript;
     console.log("Transcripción de voz:", transcript);
-
+  
     try {
+      // Interrumpir la respuesta actual del avatar
+      if (avatar) {
+        console.log("Interrumpiendo la respuesta del avatar...");
+        await fetchInterrupTexto();
+      }
+  
       // Envía la transcripción al backend para que OpenAI Realtime la procese
       const response = await fetch("http://localhost:3000/send-text", {
         method: "POST",
@@ -197,17 +230,16 @@ if (SpeechRecognition) {
         },
         body: JSON.stringify({ text: transcript }),
       });
-
+  
       if (!response.ok) {
         throw new Error("Error al enviar la transcripción al backend");
       }
       console.log("Transcripción enviada al backend con éxito");
     } catch (error) {
-      console.error("Error al enviar la transcripción:", error);
+      console.error("Error al procesar la transcripción de voz:", error);
     }
   };
-
-
+  
   recognition.onerror = (event: any) => {
     console.error("Error en el reconocimiento de voz:", event.error);
   };
@@ -218,6 +250,11 @@ if (SpeechRecognition) {
   micButton.addEventListener("click", () => {
     recognition.start();
     console.log("Reconocimiento de voz iniciado.");
+  });
+  //permanecer activa la sesión
+  recognition.addEventListener("end", () => {
+    recognition.start();
+    console.log("Reconocimiento de voz reiniciado automáticamente.");
   });
 }
 

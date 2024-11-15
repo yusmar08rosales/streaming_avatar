@@ -15,21 +15,24 @@
 
     <!-- Video Section -->
     <article style="width: fit-content">
-      <video id="avatarVideo" autoplay playsinline></video>
+      <video id="avatarVideo" autoplay playsinline style="width: 80% !important; margin: 0% 11% !important;"></video>
     </article>
 
     <!-- Controls Section -->
     <section role="group">
-      <button id="startSession">Start Session</button>
-      <button id="endSession" disabled>End Session</button>
+      <button id="startSession" class="control-button">Start Session</button>
     </section>
 
     <!-- Botón de micrófono oculto inicialmente -->
     <section role="group">
-      <button id="micButton" role="button" aria-label="Start recording" style="display: none;" >
+      <button id="micButton" role="button" class="control-button microphone-button" aria-label="Start recording"
+        style="display: none;">
         <img src="/microphone-svgrepo-com.svg" alt="Microphone" style="width: 24px; height: 35px;">
       </button>
+      <button id="endSession" class="control-button" style="display: none; margin: 0% 3%;">End Session</button>
     </section>
+
+
   </main>
 
   <script type="module" src="/src/main.ts"></script>
